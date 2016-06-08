@@ -1,3 +1,5 @@
 build/
 report/
 run.n
+.idea/
+test-out/
