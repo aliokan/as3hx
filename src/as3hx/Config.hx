@@ -255,6 +255,8 @@ class Config {
                 debugExpr = true;
             case "-no-func2dyn", "--no-func2dyn":
                 functionToDynamic = false;
+            case "-func2dyn", "--func2dyn":
+                functionToDynamic = true;
             case "-error-continue","--error-continue":
                 errorContinue = true;
             case "-test-case":
@@ -263,6 +265,14 @@ class Config {
                 debugInferredType = true;
             case "-convert-flexunit", "--convert-flexunit":
                 convertFlexunit = true;
+            case "-dictionary2hash", "--dictionary2hash":
+                dictionaryToHash = true;
+            case "-flashGetterSetterStyle", "--flashGetterSetterStyle":
+                getterSetterStyle = "flash";
+            case "-haxeGetterSetterStyle", "--haxeGetterSetterStyle":
+                getterSetterStyle = "haxe";
+            case "-combinedGetterSetterStyle", "--combinedGetterSetterStyle":
+                getterSetterStyle = "combined";
             default:
                 break;
             }
