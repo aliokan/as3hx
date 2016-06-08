@@ -36,13 +36,20 @@ class TypeParser {
             types.seen.push(TVector(t));
             return TVector(t);
         } else if (cfg.dictionaryToHash && t == "Dictionary") {
+            Sys.println("DOT");
+            /*
             tokenizer.ensure(TDot);
+            Sys.println("DOT yesss");
             tokenizer.ensure(TOp("<"));
             var k = parseType();
+            Sys.println("K " + k + ";");
             tokenizer.ensure(TComma);
             var v = parseType();
             splitEndTemplateOps(tokenizer);
             tokenizer.ensure(TOp(">"));
+            */
+            var k = TPath(["String"]);
+            var v = TPath(["Object"]);
             types.seen.push(TDictionary(k, v));
             return TDictionary(k, v);
         }
