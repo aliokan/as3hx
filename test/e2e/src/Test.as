@@ -19,11 +19,12 @@ package {
 		/**
 		 * Constructor
 		 **/
-		public function Test(nDefault:boolean, yes:string="f") { // comment at the start of Test
+		public function Test(nDefault:boolean, yes:string="f", ... args) { // comment at the start of Test
 			super();
 			var v = x as something; // x as something comment
 			var w = x as int;
 			var z = x as array;
+			var a = NaN;
 		}
 
 		/**

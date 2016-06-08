@@ -238,13 +238,15 @@ class StructureParser {
             tokenizer.ensure(TPClose);
             ECall(EField(EIdent("Type"), "resolveClass"), [e]);
         case "getTimer":
-            
+
             //consume the parenthesis from the getTimer AS3 call
             while(!ParserUtils.opt(tokenizer, TPClose)) {
                 tokenizer.token();
             }
-            
+
             ECall(EField(EIdent("Math"), "round"), [EBinop("*", ECall(EField(EIdent("haxe.Timer"), "stamp"), []), EConst(CInt("1000")), false)]);
+        case "NaN":
+            EField(EIdent("Math"), "NaN");
         default:
             null;
         }
