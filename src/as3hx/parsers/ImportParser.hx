@@ -15,6 +15,9 @@ class ImportParser {
                     if (id == "getQualifiedClassName") return [];
                     if (id == "getQualifiedSuperclassName") return [];
                     if (id == "getTimer") return [];
+                    if (id == "setTimeout") return [];
+                    if (id == "clearTimeout") return [];
+                    if (id == "extract") return []; //org.osflash.vanilla.extract
                     if (id == "getDefinitionByName") return [];
                     // TODO: this is flash.utils.Proxy need to create a compat class
                     // http://blog.int3ractive.com/2010/05/using-flash-proxy-class.html
