@@ -58,7 +58,7 @@ class Writer
         this.typeImportMap = new Map<String,String>();
         this.genTypes = [];
         this.imported = [];
-
+        // Clazz add to not geerate import for var clazz:Class in AS3
         var doNotImportClasses = [
             "Array", "Bool", "Boolean", "Class", "Date",
             "Dynamic", "EReg", "Enum", "EnumValue",
@@ -66,7 +66,8 @@ class Writer
             "Lambda", "List", "Math", "Number", "Reflect",
             "RegExp", "Std", "String", "StringBuf",
             "StringTools", "Sys", "Type", "Void",
-            "Function", "Object", "XML", "XMLList"
+            "Function", "Object", "XML", "XMLList",
+            "Clazz"
             ];
         for (c in doNotImportClasses) {
             this.typeImportMap.set(c, null);
@@ -1197,7 +1198,7 @@ class Writer
                         case "Array":
                             write("try cast(");
                             writeExpr(e1);
-                            write(", Array</*AS3HX WARNING no type*/>) catch(e:Dynamic) null");
+                            write(", Array<Dynamic>) catch(e:Dynamic) null");
                             addWarning("as array", true);
                         case "Class":
                             addWarning("as Class",true);
@@ -1388,7 +1389,7 @@ class Writer
                             writeExpr(params[0]);
                             write(")");
                             handled = true;
-                        case "int":
+                        case "int","parseInt":
                             if (cfg.useCompat) {
                                 write("as3hx.Compat.parseInt(");
                             }
@@ -2089,19 +2090,37 @@ class Writer
                 if (ex == null) rv = Ret;
             case EMeta(m):
                 if (!cfg.convertFlexunit || !writeMunitMetadata(m)) {
-                    write("@:meta("+m.name+"(");
-                    var first = true;
-                    for(arg in m.args) {
-                        if(!first)
-                            write(",");
-                        first = false;
-                        if(arg.name != null)
-                            write(arg.name + "=");
-                        else
-                            write("name=");
-                        writeExpr(arg.val);
+                    if(["Inject", "Marshall", "Language", "URL", "FlashVars", "PostConstruct", "Color"].indexOf(m.name) != -1)
+                    {
+                        write("@"+m.name+"(");
+                        var first = true;
+                        for(arg in m.args) {
+                            Debug.printDebug(arg.name + " " + arg.val);
+                            if(!first)
+                                write(",");
+                            first = false;
+                            if(arg.name != null)
+                                write(arg.name + "=");
+                            writeExpr(arg.val);
+                        }
+                        writeNL(")");
+                    } else
+                    {
+                        write("@:meta("+m.name+"(");
+                        var first = true;
+                        for(arg in m.args) {
+                            Debug.printDebug(arg.name + " " + arg.val);
+                            if(!first)
+                                write(",");
+                            first = false;
+                            if(arg.name != null)
+                                write(arg.name + "=");
+                            else
+                                write("name=");
+                            writeExpr(arg.val);
+                        }
+                        writeNL("))");
                     }
-                    writeNL("))");
                 }
             case ETypeof(e):
                 switch(e) {

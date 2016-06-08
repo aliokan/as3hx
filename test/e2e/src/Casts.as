@@ -9,6 +9,7 @@ package {
 			var b:String = String(5);
 			var c:int = int(4.5);
 			var d:int = int("1.23");
+			var d2:int = parseInt("1.23");
 			var e:MyClass = MyClass(otherObj);
 			var f:Number = Static.method(v);
 			var g:MyClass = MyClass(Static.method(v));
