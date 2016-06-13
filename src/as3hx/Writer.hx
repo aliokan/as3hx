@@ -1081,6 +1081,7 @@ class Writer
             //case "Error":     cfg.mapFlClasses ? "flash.errors.Error" : s;
             case "XML":                 "FastXML";
             case "XMLList":             "FastXMLList";
+            case "JSON":                "haxe.Json";
             //case "QName":     cfg.mapFlClasses ? "flash.utils.QName" : s;
             default: s;
         };
