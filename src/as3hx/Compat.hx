@@ -20,7 +20,7 @@ class Compat {
      */
     public static function typeof(v:Dynamic) : String {
         return
-        switch(Type.typeof(v)) {
+        switch(std.Type.typeof(v)) {
         case TUnknown: "undefined";
         case TObject: "object";
         case TNull: "object";
@@ -29,7 +29,7 @@ class Compat {
         case TFloat: "number";
         case TEnum(e): "object";
         case TClass(c):
-            switch(Type.getClassName(c)) {
+            switch(std.Type.getClassName(c)) {
             case "String": "string";
             case "Xml": "xml";
             case "haxe.xml.Fast": "xml";
@@ -42,7 +42,7 @@ class Compat {
     /**
      * Converts a typed expression into a Float.
      */
-    @:macro public static function parseFloat(e:Expr) : Expr {
+    macro public static function parseFloat(e:Expr) : Expr {
         var _ = function (e:ExprDef) return { expr: e, pos: Context.currentPos() };
         switch (Context.typeof(e)) {
             case TInst(t,params): 
@@ -55,24 +55,24 @@ class Compat {
                     }
             default:
         }
-        return _(ECall( _(EField( _(EConst(CType("Std"))), "parseFloat")), [_(ECall( _(EField( _(EConst(CType("Std"))), "string")), [e]))]));
+        return _(ECall( _(EField( _(EConst(CIdent("Std"))), "parseFloat")), [_(ECall( _(EField( _(EConst(CIdent("Std"))), "string")), [e]))]));
     }
 
     /**
      * Converts a typed expression into an Int.
      */
-    @:macro public static function parseInt(e:Expr) : Expr {
+    macro public static function parseInt(e:Expr) : Expr {
         var _ = function (e:ExprDef) return { expr: e, pos: Context.currentPos() };
         switch (Context.typeof(e)) {
             case TInst(t,params): 
                 if (t.get().pack.length == 0)
                     switch (t.get().name) {
                         case "Int": return _(ECast(e, TPath({name:"Int", pack:[], params:[], sub:null})));
-                        case "Float": return _(ECall( _(EField( _(EConst(CType("Std"))), "int")), [_(ECast(e, TPath({name:"Float", pack:[], params:[], sub:null})))]));
+                        case "Float": return _(ECall( _(EField( _(EConst(CIdent("Std"))), "int")), [_(ECast(e, TPath({name:"Float", pack:[], params:[], sub:null})))]));
                         default:
                     }
             default:
         }
-        return _(ECall( _(EField( _(EConst(CType("Std"))), "parseInt")), [_(ECall( _(EField( _(EConst(CType("Std"))), "string")), [e]))]));
+        return _(ECall( _(EField( _(EConst(CIdent("Std"))), "parseInt")), [_(ECall( _(EField( _(EConst(CIdent("Std"))), "string")), [e]))]));
     }
 }
