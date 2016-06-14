@@ -245,6 +245,8 @@ class Config {
                 Sys.exit(0);
             case "-uint2int", "--uint2int":
                 uintToInt = true;
+            case "-keepUint", "--keepUint":
+                uintToInt = false;
             case "-no-cast-guess", "--no-cast-guess":
                 guessCasts = false;
             case "-vector2array", "--vector2array":
