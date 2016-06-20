@@ -73,6 +73,7 @@ class Writer
             this.typeImportMap.set(c, null);
         }
 
+
         var topLevelErrorClasses = [
             "ArgumentError", "DefinitionError", "Error",
             "EvalError", "RangeError", "ReferenceError",
@@ -1082,6 +1083,7 @@ class Writer
             case "XML":                 "FastXML";
             case "XMLList":             "FastXMLList";
             case "JSON":                "haxe.Json";
+            case "RegExp":              "EReg";
             //case "QName":     cfg.mapFlClasses ? "flash.utils.QName" : s;
             default: s;
         };
@@ -1320,6 +1322,23 @@ class Writer
                     writeExpr(e);
                     write(op);
                 }
+            case ECall( EField(EField(EIdent(i),f0),f1 = "clearTimeout" | "setTimeout" | "navigateToURL"), params ):
+                // write("/*ECall " + i + "." + f0 + "." + f1 + "(" + params + ")*/ ");
+                switch(f1) {
+                    case "clearTimeout":
+                        write("untyped __global__[\"flash.utils.clearTimeout\"](");
+                    case "setTimeout":
+                        write("untyped __global__[\"flash.utils.setTimeout\"](");
+                    case "navigateToURL":
+                        write("flash.Lib.getURL(");
+                }
+                for (i in 0...params.length)
+                {
+                    if (i > 0)
+                        write(", ");
+                    writeExpr(params[i]);
+                }
+                write(")");
             case ECall( e, params ):
                 //write("/*ECall " + e + "(" + params + ")*/\n");
 
@@ -1828,8 +1847,8 @@ class Writer
                     inLvalAssign = oldInLVA;
                     write(")");
                 } else {
-                    //write("/*!!!" + etype + "!!!*/");
-                    if(etype != null && !StringTools.startsWith(etype, "Array<") && itype != null && itype != "Int" && itype != "UInt") {
+                    // write("/*!!!etype: " + etype + " itype: " + itype + "!!!*/");
+                    if(itype == "String" || ((etype != null && !StringTools.startsWith(etype, "Array<")) && itype != null && itype != "Int" && itype != "UInt")) {
                         if (cfg.debugInferredType) {
                             write("/* etype: " + etype + " itype: " + itype + " */");
                         }
@@ -1855,12 +1874,18 @@ class Writer
                         }
                         inLvalAssign = oldInLVA;
                         write(")");
-                    } else {
+                    } else if( itype == "Int" || itype == "UInt" ) {
                         writeExpr(e);
                         inArrayAccess = old;
                         write("[");
-                        writeExpr(index); 
+                        writeExpr(index);
                         write("]");
+                    } else {
+                        writeExpr(e);
+                        inArrayAccess = old;
+                        write("[cast (");
+                        writeExpr(index); 
+                        write(")]");
                     }
                 }
             case EArrayDecl( e ):
@@ -2868,6 +2893,8 @@ class Writer
                     case "Object"   : isNativeGetSet ? "{}" : "Dynamic";
                     case "XML"      : cfg.useFastXML ? "FastXML" : "Xml";
                     case "XMLList"  : cfg.useFastXML ? "FastXMLList" : "Iterator<Xml>";
+                    case "JSON"     : "haxe.Json";
+                    case "RegExp"   : "EReg";
                     default         : fixCase? properCase(c,true) : c;
                 }
             case TComplex(e):
