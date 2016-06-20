@@ -1322,9 +1322,9 @@ class Writer
                     writeExpr(e);
                     write(op);
                 }
-            case ECall( EField(EField(EIdent(i),f0),f1 = "clearTimeout" | "setTimeout" | "navigateToURL"), params ):
-                // write("/*ECall " + i + "." + f0 + "." + f1 + "(" + params + ")*/ ");
-                switch(f1) {
+            case ECall( EField(e0 = _, e1 = "clearTimeout" | "setTimeout" | "navigateToURL"), params ):
+                // write("/*ECall " + e0 + " " + e1 + "(" + params + ")*/ ");
+                switch(e1) {
                     case "clearTimeout":
                         write("untyped __global__[\"flash.utils.clearTimeout\"](");
                     case "setTimeout":
@@ -1339,8 +1339,17 @@ class Writer
                     writeExpr(params[i]);
                 }
                 write(")");
+            case ECall( EField(EField(EField(EIdent("org"),"osflash"),"vanilla"),"extract"), params ):
+                write("untyped __global__[\"org.osflash.vanilla.extract\"](");
+                for (i in 0...params.length)
+                {
+                    if (i > 0)
+                        write(", ");
+                    writeExpr(params[i]);
+                }
+                write(")");
             case ECall( e, params ):
-                //write("/*ECall " + e + "(" + params + ")*/\n");
+                // write("/*ECall " + e + "(" + params + ")*/\n");
 
                 //rebuild call expr if necessary
                 var eCall = rebuildCallExpr(expr, e, params);
