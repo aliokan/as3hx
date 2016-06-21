@@ -25,6 +25,8 @@ package {
 			var w = x as int;
 			var z = x as array;
 			var a = NaN;
+
+			z.insertAt(0, "");
 		}
 
 		/**

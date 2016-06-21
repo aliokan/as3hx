@@ -2596,6 +2596,14 @@ class Writer
                     var rebuiltExpr = EField(e, "substring");
                     rebuiltCall = ECall(rebuiltExpr, params);
                 }
+                else if (f == "insertAt") {
+                    //replace AS3 insertAt by Haxe insert
+                    var type = getExprType(e);
+                    if (type == null || type.indexOf("Array") != -1) {
+                        var rebuiltExpr = EField(e, "insert");
+                        rebuiltCall = ECall(rebuiltExpr, params);
+                    }
+                }
                 else if (f == "indexOf") {
                     //in AS3, indexOf is a method in Array while it is not in Haxe
                     //Replace it by the Labda.indexOf method
