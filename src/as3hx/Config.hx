@@ -251,6 +251,8 @@ class Config {
                 guessCasts = false;
             case "-vector2array", "--vector2array":
                 vectorToArray = true;
+            case "-keepVector", "--keepVector":
+                vectorToArray = false;
             case "-verifyGeneratedFiles", "--verifyGeneratedFiles":
                 verifyGeneratedFiles = true;
             case "-debug-expr", "--debug-expr":
@@ -320,6 +322,7 @@ class Config {
             case "errorContinue":       setBoolField(el, true);
             case "testCase":            setBoolField(el, false);
             case "verifyGeneratedFiles": setBoolField(el, false);
+            case "debugExpr":           setBoolField(el, false);
             case "excludeList":         setExcludeField(el, new List());
             case "conditionalCompilationList": setConditionalVars(el, new List());
             case "dictionaryToHash":    setBoolField(el, false);
@@ -428,6 +431,7 @@ class Config {
     <conditionalCompilationList />
     <dictionaryToHash value="false" />
     <verifyGeneratedFiles value="false" />
+    <debugExpr value="false" />
     <useFastXML value="true" />
     <useCompat value="true" />
     <importPaths></importPaths>

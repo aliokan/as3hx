@@ -6,6 +6,7 @@ package {
 
         public function Reg() {
             var urlPattern:RegExp = new RegExp( "http://(www|).*?\.(com|org|net|dev)", "i" );
+            new RegExp( patternArray[j], "g");
         }
     }
 }

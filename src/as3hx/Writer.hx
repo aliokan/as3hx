@@ -1203,6 +1203,14 @@ class Writer
                             writeExpr(e1);
                             write(", Array<Dynamic>) catch(e:Dynamic) null");
                             addWarning("as array", true);
+                        case "uint":
+                            write("try cast(");
+                            writeExpr(e1);
+                            write(", UInt) catch(e:Dynamic) 0");
+                        case "Boolean":
+                            write("try cast(");
+                            writeExpr(e1);
+                            write(", Bool) catch(e:Dynamic) false");
                         case "Class":
                             addWarning("as Class",true);
                             write("Type.getClass(");
@@ -2117,45 +2125,34 @@ class Writer
             case ECommented(s,b,t,ex):
                 if(t)
                     rv = writeExpr(ex);
-                writeComment(formatComment(s,b));
-                    
+                switch(s) {
+                    case "/*as3hx cast*/":
+                        write("cast ");
+                    case "/*as3hx untyped*/":
+                        write("untyped ");
+                    default:
+                        writeComment(formatComment(s,b));
+                }
                 if(!t) 
                     rv = writeExpr(ex);
 
                 if (ex == null) rv = Ret;
             case EMeta(m):
                 if (!cfg.convertFlexunit || !writeMunitMetadata(m)) {
-                    if(["Inject", "Marshall", "Language", "URL", "FlashVars", "PostConstruct", "Color"].indexOf(m.name) != -1)
-                    {
-                        write("@"+m.name+"(");
-                        var first = true;
-                        for(arg in m.args) {
-                            Debug.printDebug(arg.name + " " + arg.val);
-                            if(!first)
-                                write(",");
-                            first = false;
-                            if(arg.name != null)
-                                write(arg.name + "=");
-                            writeExpr(arg.val);
-                        }
-                        writeNL(")");
-                    } else
-                    {
-                        write("@:meta("+m.name+"(");
-                        var first = true;
-                        for(arg in m.args) {
-                            Debug.printDebug(arg.name + " " + arg.val);
-                            if(!first)
-                                write(",");
-                            first = false;
-                            if(arg.name != null)
-                                write(arg.name + "=");
-                            else
-                                write("name=");
-                            writeExpr(arg.val);
-                        }
-                        writeNL("))");
+                    write("@:meta("+m.name+"(");
+                    var first = true;
+                    for(arg in m.args) {
+                        Debug.printDebug(arg.name + " " + arg.val);
+                        if(!first)
+                            write(",");
+                        first = false;
+                        if(arg.name != null)
+                            write(arg.name + "=");
+                        else
+                            write("name=");
+                        writeExpr(arg.val);
                     }
+                    writeNL("))");
                 }
             case ETypeof(e):
                 switch(e) {
@@ -2586,9 +2583,10 @@ class Writer
         switch (expr) {
             case EField(e, f):
 
-                //replace "myVar.hasOwnProperty(myProperty)" by "myVar.exists(myProperty)"
+                //replace "myVar.hasOwnProperty(myProperty)" by "Reflect.hasField(myVar, myProperty)"
                 if (f == "hasOwnProperty") {
-                    var rebuiltExpr = EField(e, "exists");
+                    var rebuiltExpr = EField(EIdent("Reflect"), "hasField");
+                    params.unshift(e);
                     rebuiltCall = ECall(rebuiltExpr, params);
                 }
                 else if (f == "slice") {
